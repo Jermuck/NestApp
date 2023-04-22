@@ -12,7 +12,7 @@ export class UserRepository implements UserAbstractRepository{
     ){ };
 
     public async create(user: UserModel): Promise<UserModel> {
-        const newUser = this.userEntityRepository.create(user);
+        const newUser = this.userEntityRepository.save(user);
         return newUser;
     };
 
