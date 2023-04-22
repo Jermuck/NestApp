@@ -11,7 +11,8 @@ export const config:ConnectionOptions = {
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
     entities: [
-        UserEntity 
+        __dirname + "../../entities/"
     ],
     synchronize: true,
 };
+console.log(__dirname + '../../entity')
