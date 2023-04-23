@@ -3,14 +3,15 @@ import { UserDto } from "./dto/user.dto";
 import { UserRepository } from "src/infrastructure/repositories/user-repository/user.repository";
 
 @Controller("/api")
-export class UserController{
+export class UserController {
     constructor(
-        private readonly UserRepository: UserRepository
-    ){};
+        private readonly userRepository: UserRepository
+    ){ };
 
     @Post('/register')
     @HttpCode(200)
     public async register(@Body() dto: UserDto){
-
-    }
-}
+        const user = await this.userRepository.create(dto);
+        return user;
+    };
+};
