@@ -1,8 +1,8 @@
 import { ConnectionOptions } from "typeorm";
-import * as dotenv from "dotenv";
+import { config } from "dotenv";
 
-dotenv.config()
-export const config:ConnectionOptions = {
+config();
+export const DBconfig:ConnectionOptions = {
     type: "mysql",
     host: process.env.HOST,
     port: Number(process.env.PORT_DB),

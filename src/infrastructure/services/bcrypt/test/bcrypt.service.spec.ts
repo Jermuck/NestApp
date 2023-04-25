@@ -14,11 +14,11 @@ describe("BcryptService", () => {
                 BcryptService
             ]
         }).compile();
-        service = module.get<BcryptAbstractAdapter>(BcryptService);
+        service = module.get(BcryptService);
     });
 
     describe("hashPassword", () => {
-        it("Password must ber hash", async () => {
+        it("Password must be hash", async () => {
             const mockPassword = "test";
             const hashPassword = await service.hash(mockPassword);
             const validate = await service.unHash(mockPassword, hashPassword);

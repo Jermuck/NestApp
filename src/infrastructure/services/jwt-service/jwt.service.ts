@@ -1,17 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { IJwtService } from "src/domain/adapters/jwt-adapter/jwt.interface";
-import { UserModel } from "src/domain/models/user.model";
 import { JwtService} from "@nestjs/jwt";
-import dotenv from "dotenv";
+import { UserEntity } from "src/infrastructure/entities/user.entity";
+import {config} from "dotenv";
 
-dotenv.config()
-
+config()
 @Injectable()
-export class JwtAdapter implements IJwtService<UserModel> {
+export class JwtAdapter implements IJwtService<UserEntity> {
 
     constructor(private readonly jwt: JwtService) {};
 
-    public create(data: UserModel, expiresIn: string): string {
+    public create(data: UserEntity, expiresIn: string): string {
         const token = this.jwt.sign(data, {
             expiresIn, 
             secret: process.env.SECRET_KEY
@@ -19,10 +18,14 @@ export class JwtAdapter implements IJwtService<UserModel> {
         return token;
     };
 
-    public async validateToken(token: string): Promise<UserModel> {
-        const validate = await this.jwt.verify(token, {
-            secret: process.env.SECRET_KEY
-        });
-        return validate;
+    public async validateToken(token: string): Promise<UserEntity> {
+        try{
+            const validate = await this.jwt.verify(token, {
+                secret: process.env.SECRET_KEY
+            });
+            return validate;
+        }catch(err){
+            return; 
+        }
     };
 };
