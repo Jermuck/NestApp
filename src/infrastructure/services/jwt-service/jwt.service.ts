@@ -4,7 +4,8 @@ import { JwtService} from "@nestjs/jwt";
 import { UserEntity } from "src/infrastructure/entities/user.entity";
 import {config} from "dotenv";
 
-config()
+config();
+
 @Injectable()
 export class JwtAdapter implements IJwtService<UserEntity> {
 

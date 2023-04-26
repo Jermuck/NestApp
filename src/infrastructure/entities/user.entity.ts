@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { TokenEntity } from "./token.entity";
 
-@Entity()
+@Entity("UserTable")
 export class UserEntity{
     @PrimaryGeneratedColumn("increment")
     public id: number;
@@ -15,5 +16,10 @@ export class UserEntity{
     public password: string;
 
     @OneToMany(() => UserEntity, (user:UserEntity) => user.id)
+    @JoinColumn()
     public friends?: UserEntity[];
+
+    @OneToOne(() => TokenEntity, (token: TokenEntity) => token.id)
+    @JoinColumn()
+    public token: TokenEntity;
 }

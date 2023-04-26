@@ -10,8 +10,5 @@ export class UserController {
 
     @Post('/register')
     @HttpCode(200)
-    public async register(@Body() dto: UserDto){
-        const user = await this.userRepository.create(dto);
-        return user;
-    };
+    public async register(@Body() dto: UserDto){};
 };

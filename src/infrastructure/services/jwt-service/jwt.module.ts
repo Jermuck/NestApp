@@ -1,12 +1,14 @@
 import { Module } from "@nestjs/common";
-import { JwtModule } from "@nestjs/jwt";
+import { JwtModule, JwtService } from "@nestjs/jwt";
 import { JwtAdapter } from "./jwt.service";
 
 @Module({
-    providers:[JwtAdapter],
-    exports:[JwtAdapter],
-    imports:[
-        JwtModule.register({})
+    providers:[
+        JwtAdapter
+    ],
+    imports: [JwtModule.register({})],
+    exports: [
+        JwtAdapter
     ]
 })
 export class JwtAdapterModule { };

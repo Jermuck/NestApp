@@ -21,13 +21,13 @@ describe("JwtSevice", () => {
         id: 1,
         username: "Test",
         password: "String",
-        email: "String@mail.ru",
+        email: "String@mail.ru"
     };
     let token: string;
 
     describe("GeneratingToken", () => {
         it("Should be string", () => {
-            token = service.create(mockData, "1s");
+            token = service.create(mockData, "3s");
             expect(token).toBeDefined();
         });
     });
