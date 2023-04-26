@@ -15,5 +15,5 @@ export class UserEntity{
     public password: string;
 
     @OneToMany(() => UserEntity, (user:UserEntity) => user.id)
-    public friends: UserEntity[];
+    public friends?: UserEntity[];
 }

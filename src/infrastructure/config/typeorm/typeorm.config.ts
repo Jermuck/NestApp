@@ -1,8 +1,8 @@
-import { ConnectionOptions } from "typeorm";
 import { config } from "dotenv";
+import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 
 config();
-export const DBconfig:ConnectionOptions = {
+export const DBconfig:TypeOrmModuleOptions = {
     type: "mysql",
     host: process.env.HOST,
     port: Number(process.env.PORT_DB),

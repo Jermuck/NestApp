@@ -10,27 +10,32 @@ describe("JwtSevice", () => {
             imports:[JwtModule.register({})],
             providers:[JwtAdapter]
         }).compile();
-
-        service = module.get(JwtAdapter);
+        service = module.get<JwtAdapter>(JwtAdapter);
     });
-    
-    describe("Create token for user", () => {
-        const mockData:UserEntity = {
-            id: 1,
-            username: "Kirill",
-            password: "1egot200556",
-            email: "bardyugov56@bk.ru",
-            friends: []
-        };
-        let token:string;
-        it("It must be token", () => {
-            token = service.create(mockData, "3s");
+
+    it("should be defined", () => {
+        expect(service).toBeDefined()
+    });
+
+    const mockData:UserEntity = {
+        id: 1,
+        username: "Test",
+        password: "String",
+        email: "String@mail.ru",
+    };
+    let token: string;
+
+    describe("GeneratingToken", () => {
+        it("Should be string", () => {
+            token = service.create(mockData, "1s");
             expect(token).toBeDefined();
         });
+    });
 
-        it("It must be mockData", async () => {
+    describe("UnhashingToken", () => {
+        it("Should be mockData", async () => {
             const data = await service.validateToken(token);
-            expect(data).toBeDefined()
+            expect(data).toMatchObject(mockData)
         });
     });
 });

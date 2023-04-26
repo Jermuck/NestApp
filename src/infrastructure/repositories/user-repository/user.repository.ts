@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserAbstractRepository } from "src/domain/repositories/user-repository.abstract"
-import { UserEntity } from "src/infrastructure/entities/user.entity";
+import { UserEntity } from "../../entities/user.entity";
 import { Repository } from "typeorm";
 import { UserModel } from "src/domain/models/user.model";
 
@@ -17,7 +17,7 @@ export class UserRepository implements UserAbstractRepository{
             const newUser = await this.userEntityRepository.save(user);
             return newUser;
         }catch(err){
-            return null;
+            return;
         }
     };
 
@@ -28,7 +28,7 @@ export class UserRepository implements UserAbstractRepository{
             });
             return true;
         }catch(err){
-            return null;
+            return;
         }
     };
 

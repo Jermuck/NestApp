@@ -14,16 +14,21 @@ describe("BcryptService", () => {
                 BcryptService
             ]
         }).compile();
-        service = module.get(BcryptService);
+        service = module.get<BcryptAbstractAdapter>(BcryptService);
+    });
+    let mockPasword = "test";
+    let hashPassword: string;
+    describe("HashingPassword", () => {
+        it("It should be string", async () => {
+            hashPassword = await service.hash(mockPasword);
+            expect(hashPassword).toBeDefined();
+        });
     });
 
-    describe("hashPassword", () => {
-        it("Password must be hash", async () => {
-            const mockPassword = "test";
-            const hashPassword = await service.hash(mockPassword);
-            const validate = await service.unHash(mockPassword, hashPassword);
-            expect(validate).toBeTruthy();
-            expect(hashPassword).toBeDefined();
+    describe("UnhashingPassword", () => {
+        it("Should be equal mockPassword", async () => {
+            const unHashPassword = await service.unHash(mockPasword, hashPassword);
+            expect(unHashPassword).toBeTruthy();
         });
     });
 });
