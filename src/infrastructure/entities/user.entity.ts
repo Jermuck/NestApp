@@ -21,5 +21,5 @@ export class UserEntity{
 
     @OneToOne(() => TokenEntity, (token: TokenEntity) => token.id)
     @JoinColumn()
-    public token: TokenEntity;
+    public token?: TokenEntity;
 }

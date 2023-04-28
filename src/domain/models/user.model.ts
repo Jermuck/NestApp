@@ -1,6 +1,2 @@
-export class UserModel{
-    public email:string;
-    public password:string;
-    public username:string;
-    public token_id: number;
-};
+import { UserEntity } from "src/infrastructure/entities/user.entity";
+export interface UserModel extends Omit<UserEntity, "id" & "friend"> {};

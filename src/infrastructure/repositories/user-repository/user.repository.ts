@@ -4,6 +4,7 @@ import { UserAbstractRepository } from "src/domain/repositories/user-repository.
 import { UserEntity } from "../../entities/user.entity";
 import { Repository } from "typeorm";
 import { UserModel } from "src/domain/models/user.model";
+import { TokenEntity } from "src/infrastructure/entities/token.entity";
 
 @Injectable()
 export class UserRepository implements UserAbstractRepository{
@@ -12,9 +13,13 @@ export class UserRepository implements UserAbstractRepository{
         private readonly userEntityRepository: Repository<UserEntity>
     ){ };
 
-    public async create(user: UserModel): Promise<UserEntity> {
+    public async create(user: UserModel, token: TokenEntity): Promise<UserEntity> {
         try{
-            const newUser = await this.userEntityRepository.save(user);
+            const newUser = this.userEntityRepository.create({
+                ...user,
+                token:token
+            });
+            await this.userEntityRepository.save(newUser);
             return newUser;
         }catch(err){
             return;
