@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { ControllersModule } from './infrastructure/controllers/controller.module';
-import { JwtAdapterModule } from './infrastructure/services/jwt-service/jwt.module';
+import { ConfigModule} from '@nestjs/config';
+import { RepositoryModule } from './infrastructure/repositories/repository.module';
+import { AuthModule } from './infrastructure/controllers/auth/auth.module';
 
 @Module({
-  imports:[ControllersModule, JwtAdapterModule],
-  controllers: [AppController],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal:true,
+      envFilePath: "./env/.env"
+    }),
+    AuthModule
+  ],
 })
-export class AppModule {};
+export class AppModule { };

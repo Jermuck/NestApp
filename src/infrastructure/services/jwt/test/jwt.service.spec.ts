@@ -1,14 +1,22 @@
-import { JwtModule } from "@nestjs/jwt";
+import { JwtModule, JwtService } from "@nestjs/jwt";
 import { Test, TestingModule } from "@nestjs/testing";
 import { UserEntity } from "src/infrastructure/entities/user.entity";
 import { JwtAdapter } from "../jwt.service";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
-describe("JwtSevice", () => {
+describe("JwtService", () => {
     let service: JwtAdapter;
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            imports:[JwtModule.register({})],
-            providers:[JwtAdapter]
+            imports:[
+                JwtModule.register({}),
+                ConfigModule.forRoot({
+                    envFilePath:"env/.env"
+                })
+            ],
+            providers:[
+                JwtAdapter
+            ],
         }).compile();
         service = module.get<JwtAdapter>(JwtAdapter);
     });
@@ -17,17 +25,18 @@ describe("JwtSevice", () => {
         expect(service).toBeDefined()
     });
 
-    const mockData:UserEntity = {
+    const mockData  = {
         id: 1,
         username: "Test",
         password: "String",
-        email: "String@mail.ru"
-    };
+        description: "I am Testing",
+        email: "test@mail.ru",
+    } as UserEntity;
     let token: string;
 
     describe("GeneratingToken", () => {
         it("Should be string", () => {
-            token = service.create(mockData, "3s");
+            token = service.create(mockData, "6s");
             expect(token).toBeDefined();
         });
     });

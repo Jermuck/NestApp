@@ -1,2 +1,8 @@
-import { UserEntity } from "src/infrastructure/entities/user.entity";
-export interface UserModel extends Omit<UserEntity, "id" & "friend"> {};
+import { TokenEntity } from "src/infrastructure/entities/token.entity";
+
+export interface UserModel {
+    readonly username:string;
+    password:string;
+    readonly description: string
+    token?: TokenEntity;
+};

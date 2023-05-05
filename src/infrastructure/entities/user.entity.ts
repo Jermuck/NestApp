@@ -1,25 +1,30 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { TokenEntity } from "./token.entity";
 
-@Entity("UserTable")
-export class UserEntity{
-    @PrimaryGeneratedColumn("increment")
+@Entity("Users")
+export class UserEntity {
+    @PrimaryGeneratedColumn({type:"integer"})
     public id: number;
 
-    @Column("varchar", {unique:true})
-    public email: string;
+    @Column("varchar", {nullable: false})
+    public username: string;
 
-    @Column("varchar")
-    public username:string;
-
-    @Column("varchar")
+    @Column("varchar", {nullable: false})
     public password: string;
 
-    @OneToMany(() => UserEntity, (user:UserEntity) => user.id)
-    @JoinColumn()
-    public friends?: UserEntity[];
+    @Column("varchar", {nullable: false, unique: true})
+    public email: string;
 
-    @OneToOne(() => TokenEntity, (token: TokenEntity) => token.id)
+    @CreateDateColumn({name: 'CreateTime'})
+    public createDate: Date;
+
+    @UpdateDateColumn({name: "UpdateTime"})
+    public updateDate: Date;
+
+    @Column("varchar", {nullable: true})
+    public description: string;
+
+    @OneToOne(() => TokenEntity, (token) => token.user)
     @JoinColumn()
-    public token?: TokenEntity;
+    public token: TokenEntity
 }

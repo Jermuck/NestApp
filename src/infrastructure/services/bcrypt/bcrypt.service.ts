@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { BcryptAbstractAdapter } from "src/domain/adapters/bcrypt-adapter/bcrypt.adapter";
+//@ts-ignore
 import * as bcrypt from "bcrypt";
 
 @Injectable()
