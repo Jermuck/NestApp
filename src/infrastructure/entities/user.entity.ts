@@ -3,7 +3,7 @@ import { TokenEntity } from "./token.entity";
 
 @Entity("Users")
 export class UserEntity {
-    @PrimaryGeneratedColumn({type:"integer"})
+    @PrimaryGeneratedColumn("uuid")
     public id: number;
 
     @Column("varchar", {nullable: false})
@@ -24,7 +24,7 @@ export class UserEntity {
     @Column("varchar", {nullable: true})
     public description: string;
 
-    @OneToOne(() => TokenEntity, (token) => token.user)
+    @OneToOne(() => TokenEntity, (token) => token.user, {onDelete: "CASCADE"})
     @JoinColumn()
     public token: TokenEntity
 }

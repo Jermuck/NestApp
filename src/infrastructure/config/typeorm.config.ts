@@ -1,7 +1,5 @@
-import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm";
-
 export class TypeOrmConfigService implements TypeOrmOptionsFactory{
     
     constructor(private readonly config:ConfigService) {};
@@ -13,10 +11,14 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory{
             username: this.config.get<string>("USERNAME"),
             password: this.config.get<string>("PASSWORD"),
             database: this.config.get<string>("DB_NAME"),
-            synchronize: true,
-            type:"postgres",
+            synchronize: false,
+            logging: true,
+            type:"mysql",
             entities: [
                 __dirname + "./../entities/*.entity*{.js, .ts}"
+            ],
+            migrations: [
+                "./migrations/*{.ts,.js",
             ],
         };
     };

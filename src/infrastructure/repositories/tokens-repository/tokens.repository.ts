@@ -12,14 +12,8 @@ export class TokensRepository implements AbstractRepository<TokenModel, TokenEnt
         private readonly TokenEntityRepository:Repository<TokenEntity>
     ){ };
 
-    public async createAsync(data: TokenModel): Promise<TokenEntity | null> {
-        try{
-            let token = this.TokenEntityRepository.create(data);
-            token = await this.TokenEntityRepository.save(token);
-            return token;
-        }catch(err){
-            return null;
-        }
+    public async save(data: TokenModel): Promise<TokenEntity | null> {
+        return await this.TokenEntityRepository.save(data);
     };
 
     public createSync(data: TokenModel): TokenEntity {
@@ -42,15 +36,11 @@ export class TokensRepository implements AbstractRepository<TokenModel, TokenEnt
     };
 
     public async getById(id: number): Promise<TokenEntity | null> {
-        try{
-            const token = await this.TokenEntityRepository.findOne({
-                where:{
-                    id
-                }
-            });
-            return token;
-        }catch(err){
-            return null;
-        }
+        const token = await this.TokenEntityRepository.findOne({
+            where:{
+                id
+            }
+        });
+        return token;
     }
 }

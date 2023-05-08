@@ -13,14 +13,8 @@ export class UserRepository implements UserAbstractReposiotory{
         private readonly UserEntityRepository: Repository<UserEntity>
     ){};
 
-    public async createAsync(data: UserModel): Promise<UserEntity | null> {
-        try{
-            const user = this.UserEntityRepository.create(data);
-            await this.UserEntityRepository.save(user);
-            return user; 
-        }catch(err){
-            return null;
-        }
+    public async save(data: UserEntity): Promise<UserEntity> {
+        return await this.UserEntityRepository.save(data);
     };
 
     public createSync(data: UserModel): UserEntity {
@@ -41,28 +35,20 @@ export class UserRepository implements UserAbstractReposiotory{
     };
 
     public async getById(id: number): Promise<UserEntity | null> {
-        try{
-            const user = await this.UserEntityRepository.findOne({
-                where:{
-                    id
-                }
-            });
-            return user;
-        }catch(err){
-            return null;
-        }
+        const user = await this.UserEntityRepository.findOne({
+            where:{
+                id
+            }
+        });
+        return user;
     };
 
     public async getByEmail(email: string): Promise<UserEntity | null> {
-        try{
-            const user = await this.UserEntityRepository.findOne({
-                where: {
-                    email
-                }
-            });
-            return user; 
-        }catch(err){
-            return null;
-        }
-    }
+        const user = await this.UserEntityRepository.findOne({
+            where: {
+                email
+            }
+        });
+        return user; 
+    };
 }

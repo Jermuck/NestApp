@@ -15,7 +15,7 @@ export class JwtAdapter implements IJwtService<UserEntity> {
 
 
     public create(data: UserEntity, expiresIn: string): string {
-        const token = this.jwt.sign(data, {
+        const token = this.jwt.sign({...data}, {
             expiresIn, 
             secret:this.secret_key
         });

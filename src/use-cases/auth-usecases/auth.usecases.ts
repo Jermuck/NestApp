@@ -5,7 +5,9 @@ import { RegisterUseCase } from "./usecase-blocks/register.usecase";
 import { RepositoryModule } from "src/infrastructure/repositories/repository.module";
 import { JwtAdapter } from "src/infrastructure/services/jwt/jwt.service";
 import { JwtAdapterModule } from "src/infrastructure/services/jwt/jwt.module";
-
+import { BcryptService } from "src/infrastructure/services/bcrypt/bcrypt.service";
+import { ConfigService } from "@nestjs/config";
+import { BcryptModule } from "src/infrastructure/services/bcrypt/bcrypt.module";
 
 @Module({})
 export class AuthUseCase{
@@ -16,15 +18,21 @@ export class AuthUseCase{
             module: AuthUseCase,
             providers:[
                 {
-                    inject:[UserRepository, TokensRepository, JwtAdapter],
-                    useFactory: (userRepo: UserRepository, tokenRepo: TokensRepository, jwt:JwtAdapter) => new RegisterUseCase(userRepo, tokenRepo, jwt),
+                    inject:[UserRepository, TokensRepository, BcryptService, JwtAdapter, ConfigService],
+                    useFactory: (
+                        userRepo: UserRepository, 
+                        tokenRepo: TokensRepository, 
+                        bcrypt:BcryptService,
+                        jwt:JwtAdapter,
+                        config:ConfigService
+                        ) => new RegisterUseCase(userRepo, tokenRepo, bcrypt, jwt, config),
                     provide: this.REGISTER_USECASE 
                 }
             ],
             exports:[
                 this.REGISTER_USECASE
             ],
-            imports:[RepositoryModule, JwtAdapterModule]
+            imports:[RepositoryModule, JwtAdapterModule, BcryptModule.register(3)]
         }
     }
 }
