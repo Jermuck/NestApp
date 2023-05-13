@@ -3,7 +3,7 @@ import { UserEntity } from "./user.entity";
 
 @Entity("Tokens")
 export class TokenEntity{
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn()
     public id: number;
 
     @Column("text")

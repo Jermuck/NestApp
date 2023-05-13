@@ -1,21 +1,55 @@
-import { Body, Controller, HttpCode, Inject, Post, Request} from "@nestjs/common";
-import { AuthUseCase } from "src/use-cases/auth-usecases/auth.usecases";
-import { RegisterUseCase } from "src/use-cases/auth-usecases/usecase-blocks/register.usecase";
-import { UserDto } from "./dto/user.dto";
-import { Request as Req } from "express";
+import { Body, Controller, Get, HttpCode, Inject, Post, Request, Res, UseGuards} from "@nestjs/common";
+import { AuthUseCaseModule } from "src/use-cases/auth-usecases/auth.usecases";
+import { BodyCanActivate, UserRegisterDto } from "./dto/user.register.dto";
+import { Request as Req, Response } from "express";
+import { ApiBody, ApiHeader, ApiHeaders, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { AuthUseCase } from "src/use-cases/auth-usecases/usecase-blocks/auth.usecase";
+import { UserLoginDto } from "./dto/user.login.dto";
+import { AuthGuard } from "src/infrastructure/common/guard/auth.guard";
 
-@Controller("api/auth")
+@Controller("/auth")
+@ApiTags("Authorization")
 export class AuthController {
     constructor(
-        @Inject(AuthUseCase.REGISTER_USECASE)
-        private readonly RegisterUseCaseInstanse: RegisterUseCase
+        @Inject(AuthUseCaseModule.AUTHORIZATION)
+        private readonly RegisterUseCaseInstanse: AuthUseCase
     ) { };
 
     @Post("/register")
     @HttpCode(200)
-    public async register(@Body() dto: UserDto, @Request() req: Req ){
-        const { access, header, data } = await this.RegisterUseCaseInstanse.execute(dto);
+    @ApiBody({type:UserRegisterDto})
+    @ApiOperation({description:"Registration"})
+    public async register(@Body() dto: UserRegisterDto, @Request() req: Req ){
+        const { access, header, data } = await this.RegisterUseCaseInstanse.register(dto);
         req.res.setHeader("Set-Cookie", header);
         return { access, data};
     };
+
+    @Post("/login")
+    @HttpCode(200)
+    @ApiBody({type:UserLoginDto})
+    @ApiOperation({description:"Login"})
+    public async login(@Body() dto: UserLoginDto, @Request() req: Req ){
+        const { access, header, data } = await this.RegisterUseCaseInstanse.login(dto);
+        req.res.setHeader("Set-Cookie", header);
+        return { access, data };
+    };
+
+    @Post("/logout")
+    @HttpCode(200)
+    @UseGuards(AuthGuard)
+    @ApiOperation({description: "Logout"})
+    public async logout(@Body() dto:BodyCanActivate, @Res({passthrough: true}) res:Response){
+        const result = await this.RegisterUseCaseInstanse.logout(dto._id);
+        res.clearCookie("Refresh");
+        return result;
+    }
+
+    @Get("/refresh")
+    @HttpCode(200)
+    @ApiOperation({description: "Refresh"})
+    public async refresh(@Request() req:Req){
+        const token = await this.RegisterUseCaseInstanse.refresh(req.cookies["Refresh"]);
+        return token;
+    }
 };

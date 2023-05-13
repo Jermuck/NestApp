@@ -1,7 +1,7 @@
 import { DynamicModule, Module } from "@nestjs/common";
 import { TokensRepository } from "src/infrastructure/repositories/tokens-repository/tokens.repository";
 import { UserRepository } from "src/infrastructure/repositories/users-repository/users.reposiory";
-import { RegisterUseCase } from "./usecase-blocks/register.usecase";
+import { AuthUseCase } from "./usecase-blocks/auth.usecase";
 import { RepositoryModule } from "src/infrastructure/repositories/repository.module";
 import { JwtAdapter } from "src/infrastructure/services/jwt/jwt.service";
 import { JwtAdapterModule } from "src/infrastructure/services/jwt/jwt.module";
@@ -10,8 +10,8 @@ import { ConfigService } from "@nestjs/config";
 import { BcryptModule } from "src/infrastructure/services/bcrypt/bcrypt.module";
 
 @Module({})
-export class AuthUseCase{
-    static REGISTER_USECASE = "REGISTER_USECASE";
+export class AuthUseCaseModule{
+    static AUTHORIZATION = "AUTHORIZATION";
 
     static register():DynamicModule {
         return {
@@ -25,12 +25,12 @@ export class AuthUseCase{
                         bcrypt:BcryptService,
                         jwt:JwtAdapter,
                         config:ConfigService
-                        ) => new RegisterUseCase(userRepo, tokenRepo, bcrypt, jwt, config),
-                    provide: this.REGISTER_USECASE 
+                        ) => new AuthUseCase(userRepo, tokenRepo, bcrypt, jwt, config),
+                    provide: this.AUTHORIZATION
                 }
             ],
             exports:[
-                this.REGISTER_USECASE
+                this.AUTHORIZATION
             ],
             imports:[RepositoryModule, JwtAdapterModule, BcryptModule.register(3)]
         }

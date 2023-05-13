@@ -30,14 +30,13 @@ export class UserRepository implements UserAbstractReposiotory{
         }
     };
 
-    public async update(id: number): Promise<UserEntity> {
-        return {} as UserEntity;
-    };
-
     public async getById(id: number): Promise<UserEntity | null> {
         const user = await this.UserEntityRepository.findOne({
             where:{
                 id
+            },
+            relations:{
+                token: true
             }
         });
         return user;
@@ -47,6 +46,9 @@ export class UserRepository implements UserAbstractReposiotory{
         const user = await this.UserEntityRepository.findOne({
             where: {
                 email
+            },
+            relations: {
+                token: true
             }
         });
         return user; 
