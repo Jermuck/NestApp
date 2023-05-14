@@ -14,25 +14,21 @@ export class JwtAdapter implements JwtAbstractAdapter<UserEntity> {
     };
 
     public create(data: UserEntity, expiresIn: string): string {
-        const token = this.jwt.sign({...data}, {
+        const token = this.jwt.sign(data, {
             expiresIn, 
             secret:this.secret_key
         });
         return token;
     };
 
-    public async validateToken(token: string): Promise<UserEntity | null> {
+    public validateToken(token: string): UserEntity | null {
         try{
-            const validate = await this.jwt.verify(token, {
+            const validate = this.jwt.verify<UserEntity>(token, {
                 secret: this.secret_key
             });
-            return {...validate};
+            return validate;
         }catch(err){
             return null; 
         }
     };
-
-    public decode(token: string): void {
-        this.jwt.decode(token);
-    }
 };

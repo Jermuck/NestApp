@@ -8,15 +8,15 @@ export class AuthGuard implements CanActivate{
         private readonly JwtService:JwtAdapter
     ){};
 
-    public async canActivate(context: ExecutionContext): Promise<boolean> {
+    public canActivate(context: ExecutionContext): boolean {
         const request:Request = context.switchToHttp().getRequest();
-        let token = request.headers.authorization;
-        if (!token){
+        let header = request.headers.authorization;
+        if (!header){
             throw new UnauthorizedException("You are don't have token");
         }
-        token = token.split(" ")[1];
-        const user = await this.JwtService.validateToken(token);
-        if(!user){
+        const [bearer, token]= header.split(" ");
+        const user = this.JwtService.validateToken(token);
+        if(!user || bearer !== "Bearer"){
             throw new UnauthorizedException();
         }
         request.body = {
