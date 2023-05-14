@@ -14,18 +14,17 @@ async function bootstrap() {
   app.use(cookieParser())
   app.useGlobalInterceptors(new ResponseInterceptor());
   const config = new DocumentBuilder()
-    .addBearerAuth()
-    .setTitle("Backend with TypeOrm and NesJs")
+    .setTitle("Backend with TypeOrm and NestJs")
     .setDescription("My api")
     .setVersion("1.0")
     .addBearerAuth({
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-      name: 'JWT',
-      description: 'Enter JWT token',
-      in: 'header',
-    }, "JWT-auth")
+      type: 'http', 
+      scheme: 'bearer', 
+      bearerFormat: 'JWT', 
+      in: 'header' 
+    },
+      'access-token'
+      )
     .build()
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("/api", app, document);

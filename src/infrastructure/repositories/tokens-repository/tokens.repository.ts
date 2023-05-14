@@ -30,7 +30,10 @@ export class TokensRepository implements TokenAbstractRepository{
             where:{
                 user:{
                     id: userId
-                }
+                },
+            },
+            relations:{
+                user: true
             }
         })
     }
@@ -46,21 +49,18 @@ export class TokensRepository implements TokenAbstractRepository{
             });
             return true;
         }catch(err){
-            console.log(err);
-            
             return null;
         };
     };
 
     public async getById(id: number): Promise<TokenEntity | null> {
-        const token = await this.TokenEntityRepository.findOne({
+        return await this.TokenEntityRepository.findOne({
             where:{
                 id
             },
             relations: {
                 user: true
             }
-        });
-        return token;
-    }
+        })
+    };
 }

@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, Inject, Post, Request, Res, UseGuards}
 import { AuthUseCaseModule } from "src/use-cases/auth-usecases/auth.usecases";
 import { BodyCanActivate, UserRegisterDto } from "./dto/user.register.dto";
 import { Request as Req, Response } from "express";
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiCookieAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthUseCase } from "src/use-cases/auth-usecases/usecase-blocks/auth.usecase";
 import { UserLoginDto } from "./dto/user.login.dto";
 import { AuthGuard } from "src/infrastructure/common/guards/auth.guard";
@@ -48,7 +48,7 @@ export class AuthController {
     @HttpCode(200)
     @UseGuards(AuthGuard)
     @ApiOperation({description:"Logout"})
-    @ApiBearerAuth("JWT-auth")
+    @ApiBearerAuth("access-token")
     @ApiResponse({
         type: ResultAuthorization.Logout,
         status: 200
@@ -57,7 +57,7 @@ export class AuthController {
         const result = await this.AuthorizationUseCaseInstanse.logout(dto._id);
         res.clearCookie("Refresh");
         return result;
-    }
+    };
 
     @Get("/refresh")
     @HttpCode(200)
@@ -66,9 +66,10 @@ export class AuthController {
         type:ResultAuthorization.Refresh,
         status:200
     })
+    @ApiCookieAuth()
     public async refresh(@Request() req:Req){
         const {access, header} = await this.AuthorizationUseCaseInstanse.refresh(req.cookies["Refresh"]);
         req.res.setHeader("Set-Cookie", header);
         return { access };
-    }
-};
+    };
+}
