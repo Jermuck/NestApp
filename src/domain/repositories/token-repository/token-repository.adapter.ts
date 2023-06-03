@@ -1,6 +1,6 @@
 import { TokenModel } from "src/domain/models/token.model";
 import { TokenEntity } from "src/infrastructure/entities/token.entity";
-import { AbstractRepository } from "../globalRepository/repository.abstract";
+import { AbstractRepository } from "../global-repository/repository.abstract";
 import { UpdateResult } from "typeorm";
 
 export abstract class TokenAbstractRepository extends AbstractRepository<TokenModel, TokenEntity> {

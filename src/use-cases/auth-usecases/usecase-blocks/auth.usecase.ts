@@ -19,25 +19,26 @@ export class AuthUseCase {
     ) { };
 
     private generateTokens(user: UserEntity): [string, string] {
-        const access = this.JwtService.create(user, this.config.get<string>("TIME_ACCESS"));
-        const refresh = this.JwtService.create(user, this.config.get<string>("TIME_REFRESH"));
+        const access = this.JwtService.create(user, this.config.get<number>("TIME_ACCESS"));
+        const refresh = this.JwtService.create(user, this.config.get<number>("TIME_REFRESH"));
         return [access, refresh];
     };
 
     private generateHeader(token: string): string {
-        return `Refresh=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 10}`
+        return `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.config.get<number>("TIME_REFRESH")}`
     };
 
     public async register(data: UserRegisterDto): Promise<ResultAuthorization.Auth> {
         const validate = await this.UserRepository.getByEmail(data.email);
         if (validate) {
             throw new BadRequestException("This user already login");
-        };
+        }
         const hashPassword = await this.bcrypt.hash(data.password);
         const user = await this.UserRepository.save({ ...data, password: hashPassword });
-        const [access, refresh] = this.generateTokens({...user});
+        const [access, refresh] = this.generateTokens({ ...user });
         await this.TokenRepository.save({ token: access, user })
         const header = this.generateHeader(refresh);
+        delete user.token;
         return {
             access,
             header,
@@ -56,7 +57,7 @@ export class AuthUseCase {
         }
         const tokenRelation = user.token;
         delete user.token;
-        const [access, refresh] = this.generateTokens({...user});
+        const [access, refresh] = this.generateTokens({ ...user });
         const header = this.generateHeader(refresh);
         if (tokenRelation) {
             await this.TokenRepository.update(tokenRelation.id, refresh);
@@ -76,22 +77,18 @@ export class AuthUseCase {
             throw new BadRequestException("You are already logout");
         }
         await this.TokenRepository.delete(token.id);
-        return {message: "Logout success"};
+        return { message: "Logout success" };
     };
 
     public async refresh(token: string): Promise<ResultAuthorization.Refresh> {
         const payload = this.JwtService.validateToken(token);
-        if(!payload){
-            throw new UnauthorizedException();
-        }
+        if(!payload) throw new UnauthorizedException();
         const tokenWithRelation = await this.TokenRepository.getByUserId(payload.id);
-        if (!tokenWithRelation) {
-            throw new UnauthorizedException();
-        }
+        if(!tokenWithRelation) throw new UnauthorizedException();
         const user = this.UserRepository.createSync(payload);
         const [access, refresh] = this.generateTokens({ ...user });
         await this.TokenRepository.update(tokenWithRelation.id, refresh);
         const header = this.generateHeader(refresh);
-        return {access, header};
-    }
+        return { access, header };
+    };
 };

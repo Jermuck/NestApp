@@ -6,7 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { ResponseInterceptor } from './infrastructure/common/interceptors/response.interceptor';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   const envconfig = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe());
@@ -18,13 +18,13 @@ async function bootstrap() {
     .setDescription("My api")
     .setVersion("1.0")
     .addBearerAuth({
-      type: 'http', 
-      scheme: 'bearer', 
-      bearerFormat: 'JWT', 
-      in: 'header' 
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header'
     },
       'access-token'
-      )
+    )
     .build()
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("/api", app, document);

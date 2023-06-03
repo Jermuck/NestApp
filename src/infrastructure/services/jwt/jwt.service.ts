@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { JwtService} from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";
 import { UserEntity } from "../../entities/user.entity";
 import { ConfigService } from "@nestjs/config";
 import { JwtAbstractAdapter } from "src/domain/adapters/jwt-adapter/jwt.adapter";
@@ -9,26 +9,26 @@ export class JwtAdapter implements JwtAbstractAdapter<UserEntity> {
 
     private readonly secret_key: string;
 
-    constructor(private readonly jwt: JwtService, private readonly config:ConfigService) {
+    constructor(private readonly jwt: JwtService, private readonly config: ConfigService) {
         this.secret_key = this.config.get<string>("SECRET_KEY");
     };
 
-    public create(data: UserEntity, expiresIn: string): string {
+    public create(data: UserEntity, expiresIn: number): string {
         const token = this.jwt.sign(data, {
-            expiresIn, 
-            secret:this.secret_key
+            expiresIn,
+            secret: this.secret_key
         });
         return token;
     };
 
     public validateToken(token: string): UserEntity | null {
-        try{
+        try {
             const validate = this.jwt.verify<UserEntity>(token, {
                 secret: this.secret_key
             });
             return validate;
-        }catch(err){
-            return null; 
+        } catch (err) {
+            return null;
         }
     };
-};
+}

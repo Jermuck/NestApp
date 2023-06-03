@@ -1,5 +1,5 @@
-import { Body, Controller, Get, HttpCode, Inject, Post, Request, Res, UseGuards} from "@nestjs/common";
-import { AuthUseCaseModule } from "src/use-cases/auth-usecases/auth.usecases";
+import { Body, Controller, Get, HttpCode, Inject, Post, Request, Res, UseGuards } from "@nestjs/common";
+import { AuthUseCaseModule } from "src/use-cases/auth-usecases/auth.usecases-proxy";
 import { BodyCanActivate, UserRegisterDto } from "./dto/user.register.dto";
 import { Request as Req, Response } from "express";
 import { ApiBearerAuth, ApiBody, ApiCookieAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -18,27 +18,27 @@ export class AuthController {
 
     @Post("/register")
     @HttpCode(200)
-    @ApiBody({type:UserRegisterDto})
-    @ApiOperation({description:"Registration"})
+    @ApiBody({ type: UserRegisterDto })
+    @ApiOperation({ description: "Registration" })
     @ApiResponse({
         type: ResultAuthorization.Auth,
         status: 200
     })
-    public async register(@Body() dto: UserRegisterDto, @Request() req: Req ){
+    public async register(@Body() dto: UserRegisterDto, @Request() req: Req) {
         const { access, header, user } = await this.AuthorizationUseCaseInstanse.register(dto);
         req.res.setHeader("Set-Cookie", header);
-        return { access, user};
+        return { access, user };
     };
 
     @Post("/login")
     @HttpCode(200)
-    @ApiBody({type:UserLoginDto})
-    @ApiOperation({description:"Login"})
+    @ApiBody({ type: UserLoginDto })
+    @ApiOperation({ description: "Login" })
     @ApiResponse({
         type: ResultAuthorization.Auth,
-        status:200
+        status: 200
     })
-    public async login(@Body() dto: UserLoginDto, @Request() req: Req ){
+    public async login(@Body() dto: UserLoginDto, @Request() req: Req) {
         const { access, header, user } = await this.AuthorizationUseCaseInstanse.login(dto);
         req.res.setHeader("Set-Cookie", header);
         return { access, user };
@@ -47,13 +47,13 @@ export class AuthController {
     @Post("/logout")
     @HttpCode(200)
     @UseGuards(AuthGuard)
-    @ApiOperation({description:"Logout"})
+    @ApiOperation({ description: "Logout" })
     @ApiBearerAuth("access-token")
     @ApiResponse({
         type: ResultAuthorization.Logout,
         status: 200
     })
-    public async logout(@Body() dto:BodyCanActivate, @Res({passthrough: true}) res:Response){
+    public async logout(@Body() dto: BodyCanActivate, @Res({ passthrough: true }) res: Response) {
         const result = await this.AuthorizationUseCaseInstanse.logout(dto._id);
         res.clearCookie("Refresh");
         return result;
@@ -61,14 +61,14 @@ export class AuthController {
 
     @Get("/refresh")
     @HttpCode(200)
-    @ApiOperation({description: "Refresh"})
+    @ApiOperation({ description: "Refresh" })
     @ApiResponse({
-        type:ResultAuthorization.Refresh,
-        status:200
+        type: ResultAuthorization.Refresh,
+        status: 200
     })
     @ApiCookieAuth()
-    public async refresh(@Request() req:Req){
-        const {access, header} = await this.AuthorizationUseCaseInstanse.refresh(req.cookies["Refresh"]);
+    public async refresh(@Request() req: Req) {
+        const { access, header } = await this.AuthorizationUseCaseInstanse.refresh(req.cookies["Refresh"]);
         req.res.setHeader("Set-Cookie", header);
         return { access };
     };

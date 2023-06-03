@@ -6,26 +6,29 @@ import { UserEntity } from "../entities/user.entity";
 import { TokenEntity } from "../entities/token.entity";
 import { UserRepository } from "./users-repository/users.reposiory";
 import { TokensRepository } from "./tokens-repository/tokens.repository";
+import { FriendRepository } from "./friends-repository/friends.repository";
+import { FriendEntity } from "../entities/friend.entity";
 
 @Module({
     imports: [
         TypeOrmModule.forRootAsync({
             useFactory: (cfg:ConfigService) => {
               const instanse = new TypeOrmConfigService(cfg);
-              const config = instanse.createTypeOrmOptions();
-              return config;  
+              return instanse.createTypeOrmOptions();
             },
             inject: [ConfigService] 
         }),
-        TypeOrmModule.forFeature([UserEntity, TokenEntity])
+        TypeOrmModule.forFeature([UserEntity, TokenEntity, FriendEntity])
     ],
     providers:[
         UserRepository,
-        TokensRepository
+        TokensRepository,
+        FriendRepository
     ],
     exports:[
         UserRepository,
-        TokensRepository
+        TokensRepository,
+        FriendRepository
     ]
 })
 export class RepositoryModule {};
