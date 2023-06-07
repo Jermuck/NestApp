@@ -1,66 +1,48 @@
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { TokenModel } from "src/domain/models/token.model";
+import { TokenEntity } from "@prisma/client";
 import { TokenAbstractRepository } from "src/domain/repositories/token-repository/token-repository.adapter";
-import { TokenEntity } from "src/infrastructure/entities/token.entity";
-import { Repository, UpdateResult } from "typeorm";
+import { PrismaService } from "src/infrastructure/config/prisma.config";
 
 @Injectable()
-export class TokensRepository implements TokenAbstractRepository{
-    constructor(
-        @InjectRepository(TokenEntity)
-        private readonly TokenEntityRepository:Repository<TokenEntity>
-    ){ };
+export class TokensRepository implements TokenAbstractRepository {
+  constructor(
+    private readonly prisma: PrismaService
+  ) { };
 
-    public async save(data: TokenModel): Promise<TokenEntity | null> {
-        return await this.TokenEntityRepository.save(data);
-    };
+  public async save(data: string): Promise<TokenEntity> {
+    return await this.prisma.tokenEntity.create({
+      data: { token: data }
+    });
+  };
 
-    public async update(id: number, token: string): Promise<UpdateResult> {
-        return await this.TokenEntityRepository
-            .createQueryBuilder()
-            .update(TokenEntity)
-            .set({token:token})
-            .where("id = :id", {id:id})
-            .execute()
-    };
+  public async delete(id: number): Promise<boolean> {
+    const isDelete = await this.prisma.tokenEntity.delete({
+      where: { id }
+    });
+    return isDelete ? true : false;
+  };
 
-    public async getByUserId(userId: number): Promise<TokenEntity> {
-        return await this.TokenEntityRepository.findOne({
-            where:{
-                user:{
-                    id: userId
-                },
-            },
-            relations:{
-                user: true
-            }
-        })
-    }
+  public async getById(id: number): Promise<TokenEntity> {
+    return await this.prisma.tokenEntity.findUnique({
+      where: { id }
+    });
+  };
 
-    public createSync(data: TokenModel): TokenEntity {
-        return this.TokenEntityRepository.create(data);
-    };
+  public async getByUserId(userId: number): Promise<TokenEntity> {
+    return await this.prisma.tokenEntity.findUnique({
+      where: { userId }
+    });
+  };
 
-    public async delete(id: number): Promise<boolean | null> {
-        try{
-            await this.TokenEntityRepository.delete({
-                id
-            });
-            return true;
-        }catch(err){
-            return null;
-        };
-    };
+  public async update(id: number, token: string): Promise<TokenEntity> {
+    return await this.prisma.tokenEntity.update({
+      where: { id }, data: { token }
+    });
+  };
 
-    public async getById(id: number): Promise<TokenEntity | null> {
-        return await this.TokenEntityRepository.findOne({
-            where:{
-                id
-            },
-            relations: {
-                user: true
-            }
-        })
-    };
+  public async saveWithoutRelationUser(token: string, userId: number): Promise<TokenEntity> {
+    return await this.prisma.tokenEntity.create({
+      data: { token, userId }
+    })
+  }
 }

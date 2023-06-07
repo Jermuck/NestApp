@@ -1,15 +1,32 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { UserEntity } from "src/infrastructure/entities/user.entity";
 
 export namespace ResultAuthorization {
-  export class Auth {
+
+  export class RequiredUser {
+    @ApiProperty()
+    public username: string;
+
+    @ApiProperty()
+    public email: string;
+
+    @ApiProperty()
+    public description: string;
+
+    @ApiProperty()
+    public updateDate: Date;
+
+    @ApiProperty()
+    public createData: Date;
+  }
+
+  export class ResponseForAuthRequest {
     @ApiProperty()
     public access: string;
 
     public header: string;
 
     @ApiProperty()
-    public user: UserEntity;
+    public user: RequiredUser;
   };
 
   export class Logout {

@@ -1,9 +1,8 @@
-import { TokenModel } from "src/domain/models/token.model";
-import { TokenEntity } from "src/infrastructure/entities/token.entity";
 import { AbstractRepository } from "../global-repository/repository.abstract";
-import { UpdateResult } from "typeorm";
+import { TokenEntity } from "@prisma/client";
 
-export abstract class TokenAbstractRepository extends AbstractRepository<TokenModel, TokenEntity> {
-    abstract update(id:number, token:string): Promise<UpdateResult>;
-    abstract getByUserId(userId:number): Promise<TokenEntity>
+export abstract class TokenAbstractRepository extends AbstractRepository<string, TokenEntity> {
+  abstract update(id: number, token: string): Promise<TokenEntity>;
+  abstract getByUserId(userId: number): Promise<TokenEntity>;
+  abstract saveWithoutRelationUser(token: string, userId: number): Promise<TokenEntity>;
 };

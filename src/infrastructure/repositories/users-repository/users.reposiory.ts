@@ -1,65 +1,36 @@
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { UserModel } from "src/domain/models/user.model";
 import { UserAbstractReposiotory } from "src/domain/repositories/user-repository/user-repository.abstract";
-import { UserEntity } from "src/infrastructure/entities/user.entity";
-import { Repository } from "typeorm";
+import { PrismaService } from "src/infrastructure/config/prisma.config";
+import { Prisma, UserEntity } from "@prisma/client";
 
 @Injectable()
 export class UserRepository implements UserAbstractReposiotory {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly UserEntityRepository: Repository<UserEntity>
+    private readonly prisma: PrismaService
   ) { };
 
-  public async save(data: UserEntity): Promise<UserEntity> {
-    return await this.UserEntityRepository.save(data);
-  };
-
-  public createSync(data: UserModel): UserEntity {
-    return this.UserEntityRepository.create(data);
-  }
-
-  public async delete(id: number): Promise<boolean | null> {
-    try {
-      await this.UserEntityRepository.delete({ id });
-      return true;
-    } catch (err) {
-      return null;
-    }
-  };
-
-  public async getById(id: number): Promise<UserEntity | null> {
-    return await this.UserEntityRepository.findOne({
-      where: {
-        id
-      },
-      relations: {
-        token: true
-      }
-    });
-  };
-
-  public async getByEmail(email: string): Promise<UserEntity | null> {
-    return await this.UserEntityRepository.findOne({
-      where: {
-        email
-      },
-      relations: {
-        token: true
-      }
-    });
-  };
-
-  public async getByIdWithAllRelations(id: number): Promise<UserEntity | null> {
-    return await this.UserEntityRepository.findOne({
-      where: {
-        id
-      },
-      relations: {
-        friend: true,
-        token: true
-      }
+  public async save(data: Prisma.UserEntityCreateInput): Promise<UserEntity> {
+    return await this.prisma.userEntity.create({
+      data: data
     })
+  };
+
+  public async getByEmail(email: string): Promise<UserEntity> {
+    return await this.prisma.userEntity.findUnique({
+      where: { email }
+    })
+  };
+
+  public async getById(id: number): Promise<UserEntity> {
+    return await this.prisma.userEntity.findUnique({
+      where: { id }
+    })
+  };
+
+  public async delete(id: number): Promise<boolean> {
+    const isDelete = await this.prisma.userEntity.delete({
+      where: { id }
+    });
+    return isDelete ? true : false;
   }
 }
