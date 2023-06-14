@@ -8,11 +8,12 @@ RUN npm install
 
 COPY . .
 
+RUN npm run prisma:start
 
-RUN npm run prisma:generate
+RUN npm run build
 
 EXPOSE 4444
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "deploy"]
 
 
