@@ -7,7 +7,7 @@ import { BooksModule } from './infrastructure/controllers/books/books.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ".env"
+      envFilePath: `.env`
     }),
     AuthModule,
     BooksModule

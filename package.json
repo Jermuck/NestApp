@@ -22,7 +22,7 @@
     "prisma:generate": "npx prisma migrate dev --schema=./src/infrastructure/entities/schema.entities.prisma",
     "prisma:studio": "npx prisma studio --schema=./src/infrastructure/entities/schema.entities.prisma",
     "prisma:push": "npx prisma migrate deploy --schema=./src/infrastructure/entities/schema.entities.prisma",
-    "deploy": "npm run prisma:push && npm run start:prod && npm run prisma:studio"
+    "deploy": "npm run prisma:push && npm run start:prod"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -36,6 +36,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
     "pg": "^8.11.0",
     "prisma": "^4.15.0",

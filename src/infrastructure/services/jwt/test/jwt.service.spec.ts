@@ -11,7 +11,7 @@ describe("JwtService", () => {
       imports: [
         JwtModule.register({}),
         ConfigModule.forRoot({
-          envFilePath: ".env"
+          envFilePath: `.env`
         })
       ],
       providers: [
