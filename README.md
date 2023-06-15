@@ -12,7 +12,7 @@
   Swagger
 
 # Env example
-  PORT = 4444
+  \n PORT = 4444
   SECRET_KEY = SECRET
   TIME_ACCESS = 416000
   TIME_REFRESH = 6480000
